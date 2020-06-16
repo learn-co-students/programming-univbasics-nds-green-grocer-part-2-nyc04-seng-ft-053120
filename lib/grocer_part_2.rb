@@ -8,7 +8,7 @@ def apply_coupons(cart, coupons)
   cart.each { |item|
     index = 0
     while coupons.length > index
-      if item[:item] == coupons[index][:item] && item[:count] > 0
+      if item[:item] == coupons[index][:item] && item[:count] >= coupons[index][:num]
         checkout_cart << {item: "#{coupons[index][:item]} W/COUPON", price: coupons[index][:cost]/coupons[index][:num], clearance: item[:clearance], count: coupons[index][:num]}
 
         if item[:count] - coupons[index][:num] <= 0
@@ -37,11 +37,9 @@ def apply_clearance(cart)
 end
 
 def checkout(cart, coupons)
-  coupons.uniq!
   checkout_cart_1 = consolidate_cart(cart)
   checkout_cart_2 = apply_coupons(checkout_cart_1, coupons)
   final_cart = apply_clearance(checkout_cart_2)
-  puts final_cart
 
   price = 0
 
