@@ -1,8 +1,7 @@
 require_relative './part_1_solution.rb'
 require 'pry'
 
-def apply_coupons(cart, coupons)
-  # REMEMBER: This method **should** update cart
+def apply_coupons(cart, coupons) #This method **should** update cart
   coupons.each do |element|
     cart.each do |cart_item|
       if cart_item[:count] >= element[:num] && cart_item[:item] == element[:item]
@@ -18,47 +17,29 @@ def apply_coupons(cart, coupons)
   end 
   cart
 end
-=begin
-[
-  {
-    :item => "AVOCADO", 
-    :price => 3.00, 
-    :clearance => true, 
-    :count => 3
-  },
-  {
-    :item => "KALE",    
-    :price => 3.00, 
-    :clearance => false, 
-    :count => 1
-  }
-]
-and an Array with a single coupon:
-[
-  {:item => "AVOCADO", :num => 2, :cost => 5.00}
-]
-then `apply_coupons` should change the first Array to look like:
-[
-  {:item => "AVOCADO", :price => 3.00, :clearance => true, :count => 1},
-  {:item => "KALE", :price => 3.00, :clearance => false, :count => 1},
-  {:item => "AVOCADO W/COUPON", :price => 2.50, :clearance => true, :count => 2}
-]
-=end 
 
 def apply_clearance(cart)
-  # Consult README for inputs and outputs
-  #
-  # REMEMBER: This method **should** update cart
+  cart.each do |item|
+    if item[:clearance] == true
+      item[:price] = item[:price].round(2)  - (item[:price] * 0.20) 
+    end 
+  end 
+  cart 
 end
 
 def checkout(cart, coupons)
-  # Consult README for inputs and outputs
-  #
-  # This method should call
-  # * consolidate_cart
-  # * apply_coupons
-  # * apply_clearance
-  #
-  # BEFORE it begins the work of calculating the total (or else you might have
-  # some irritated customers
+  new_cart = consolidate_cart(cart)
+  apply_coupons(new_cart, coupons)
+  apply_clearance(new_cart)
+  total = []
+  grand_total = []
+  new_cart.each do |item|
+    total = item[:price] * item[:count]
+    grand_total << total 
+  end
+  grand_total = grand_total.sum
+  if grand_total >= 100
+    grand_total = grand_total - (grand_total * 0.10)
+  end
+  grand_total
 end
